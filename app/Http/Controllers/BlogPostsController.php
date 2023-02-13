@@ -40,4 +40,48 @@ class BlogPostsController extends Controller
         ]);
         return redirect('add-post')->with('message', 'Blog Post was created successfully!');
     }
+
+    public function edit($id)
+    {
+        $post = BlogPost::find($id);
+        return view('edit', [
+            'post' => $post,
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        // dd($request->picture);
+        BlogPost::where('id',$request->id)->update([
+            'title' => $request->title,
+            'body' => $request->body
+        ]);
+
+        if($request->picture != null) {
+            $imageName = time().'.'.$request->picture->extension();
+            $request->picture->move(public_path('images'), $imageName);
+            BlogPost::where('id',$request->id)->update([
+                'picture' => $imageName
+            ]);
+        }
+
+        return redirect('edit/' . $request->id)->with('message', 'Post was updated successfully!');
+    }
+
+    public function destroy(BlogPost $blogPost, Request $request)
+    {   
+        $res=BlogPost::where('id',$request->id)->delete();
+        return redirect()->back()->with('message', 'Post was deleted successfully!');
+    }
+
+    // public function search(Request $request){
+    //     $search = $request->search;
+    
+    //     $posts = BlogPost::query()
+    //         ->where('title', 'LIKE', "%{$search}%")
+    //         ->orWhere('body', 'LIKE', "%{$search}%")
+    //         ->get();
+        
+    //     return view('search', compact('posts'));
+    // }
 }

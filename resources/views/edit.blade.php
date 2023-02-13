@@ -10,35 +10,39 @@
         </div>
         @endif
             <div class="card">
-                <div class="card-header">{{ __('Create Blog Post') }}</div>
+                <div class="card-header">{{ __('Edit Blog Post') }}</div>
 
                 <div class="card-body">
-                <form enctype="multipart/form-data" method="POST" action="{{ route('create-post') }}">
+                <form enctype="multipart/form-data" method="POST">
                     @csrf
+                    @method('PUT')
                     <div class="row">
                         <div class="col-md-8 col-lg-8 col-xs-12">
                             <div class="form-group">
                                 <label for="title">Post Title</label>
-                                <input type="text" name="title" class="form-control" id="title" placeholder="Enter title" required>
+                                <input type="text" value="{{ $post->title }}" name="title" class="form-control" id="title" placeholder="Enter title">
                             </div>
                             <div class="form-group">
                                 <label for="exampleFormControlTextarea1">Post Text</label>
-                                <textarea name="body" class="form-control" id="exampleFormControlTextarea1" required placeholder="Enter post text" rows="3"></textarea>
+                                <textarea name="body" class="form-control" id="exampleFormControlTextarea1" placeholder="Enter post text" rows="3">
+                                    {{ $post->body }}
+                                </textarea>
                             </div>
                         </div>
 
                         <div class="col-md-4 col-lg-4 col-xs-12 text-center">
                             <div class="form-group">
-                                <img height="150" id="input-img" src="./images/no_img.jpg" alt="No Image"/>
-                                <input type="file" name="picture" onchange="updateImage(this)" required class="form-control" id="customFile"/>
+                                <img height="200"  id="input-img" src="../images/{{$post->picture}}" alt="No Image"/>
+                                <input type="file" name="picture" onchange="updateImage(this)" class="form-control mt-3" id="customFile"/>
                             </div>
                         </div>
                     </div>
                     <input type="hidden" id="custId" name="user_id" value="{{ Auth::user()->id }}">
+                    <input type="hidden" id="post-id" name="id" value="{{ $post->id }}">
                     <div class="row mt-2">
                         <div class="col-md-6">
                             <button type="submit" class="btn btn-primary">
-                                Create Post
+                                Update Post
                             </button>
                         </div>
                     </div>

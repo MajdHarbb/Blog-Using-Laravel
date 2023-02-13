@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\BlogPost;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,23 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $posts = BlogPost::paginate(5);
+        return view('home', [
+            'posts' => $posts,
+        ]);
+    }
+
+    public function search(Request $request){
+        $search = $request->search;
+        
+        $posts = BlogPost::query()
+            ->where('title', 'LIKE', "%{$search}%")
+            ->orWhere('body', 'LIKE', "%{$search}%")
+            ->paginate(5);
+                    
+        return view('home', [
+            'posts' => $posts,
+            'tsearch' => $search
+        ]);
     }
 }
